@@ -9,6 +9,7 @@ public class InventoryManager : MonoBehaviour
     private GameObject currentViewItem;
     public Transform itemViewpoint; // Reference to the itemViewpoint object
     public float rotationSpeed;
+    public float viewItemScale;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -94,7 +95,7 @@ public class InventoryManager : MonoBehaviour
         currentViewItem = Instantiate(inventory[index]);
         currentViewItem.transform.SetParent(itemViewpoint); // Move to itemViewpoint
         currentViewItem.transform.localPosition = Vector3.zero; // Center it at itemViewpoint
-        currentViewItem.transform.localScale = Vector3.one * 5; // Scale to 5 along all axes
+        currentViewItem.transform.localScale = Vector3.one * viewItemScale; // Scale to viewItemScale along all axes
         currentViewItem.transform.localRotation = Quaternion.Euler(45, 0, 45); // Set rotation to (45, 0, 45)
     }
 }

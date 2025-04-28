@@ -42,11 +42,11 @@ public class PlaneMouseHit : MonoBehaviour
         isMoving = true; // Set the moving flag to true
 
         // Normalize the coordinates to ensure consistent row and column calculations
-        float normalizedCurrentX = currentBoardCenter.x + 6; // Shift x to range [0, 12]
-        float normalizedCurrentZ = -currentBoardCenter.z + 6; // Shift z to range [0, 12]
+        float normalizedCurrentX = currentBoardCenter.x + 6; // Shift x to range [0, 11]
+        float normalizedCurrentZ = -currentBoardCenter.z + 6; // Shift z to range [0, 11]
 
-        float normalizedTargetX = targetBoardCenter.x + 6; // Shift x to range [0, 12]
-        float normalizedTargetZ = -targetBoardCenter.z + 6; // Shift z to range [0, 12]
+        float normalizedTargetX = targetBoardCenter.x + 6; // Shift x to range [0, 11]
+        float normalizedTargetZ = -targetBoardCenter.z + 6; // Shift z to range [0, 11]
 
         // Calculate the difference in rows and columns
         int currentRow = Mathf.FloorToInt(normalizedCurrentX / 2) + 1;
@@ -70,15 +70,15 @@ public class PlaneMouseHit : MonoBehaviour
 
         // Handle row movement first
         while (currentRow != targetRow) {
-            intermediateTarget.x += (targetRow > currentRow ? 2 : -2);
-            currentRow += (targetRow > currentRow ? 1 : -1);
+            intermediateTarget.x += targetRow > currentRow ? 2 : -2;
+            currentRow += targetRow > currentRow ? 1 : -1;
             yield return StartCoroutine(MoveToPosition(intermediateTarget));
         }
 
         // Handle column movement next
         while (currentColumn != targetColumn) {
-            intermediateTarget.z += (targetColumn > currentColumn ? -2 : 2);
-            currentColumn += (targetColumn > currentColumn ? 1 : -1);
+            intermediateTarget.z += targetColumn > currentColumn ? -2 : 2;
+            currentColumn += targetColumn > currentColumn ? 1 : -1;
             yield return StartCoroutine(MoveToPosition(intermediateTarget));
         }
 

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Items
+  - Trigger
+  - Wall
+  - Dice
   layers:
   - Default
   - TransparentFX
