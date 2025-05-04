@@ -23,9 +23,9 @@ public class DiceRolling : MonoBehaviour
                 dice.Add(newDie);
             }
             foreach (GameObject die in dice) {
-                Rigidbody dicerb = die.GetComponent<Rigidbody>();
-                dicerb.isKinematic = false;
-                dicerb.AddForce(new Vector3(-Random.Range(5, 20), 0, 0), ForceMode.Impulse);
+                Rigidbody diceRb = die.GetComponent<Rigidbody>();
+                diceRb.isKinematic = false;
+                diceRb.AddForce(new Vector3(-Random.Range(5, 20), 0, 0), ForceMode.Impulse);
             }
         }
     }
