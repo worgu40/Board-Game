@@ -149,7 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 6719116564937702410, guid: 2c44845254abf4645b6788a3aeee5b09, type: 3}
-  enemyPrefab: {fileID: 3489259329081562675, guid: af3e26313ee50cb4398153278026943b, type: 3}
+  enemyPrefab: {fileID: 2042808025092547558, guid: af3e26313ee50cb4398153278026943b, type: 3}
+  planeMouseHit: {fileID: 1754082253}
 --- !u!4 &15666218
 Transform:
   m_ObjectHideFlags: 0
@@ -478,7 +479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4335491129935469544, guid: 115a4defbb4d4244a844fe6cf426dcaa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1369,7 +1370,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 4c16d1ce1313a0d43b08cf4b22ec61aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1408,7 +1409,7 @@ Transform:
   m_GameObject: {fileID: 1132464623}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 0, z: 5}
+  m_LocalPosition: {x: 5, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1664,10 +1665,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5059cd438e5d7084aadb5f852652f472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterManager: {fileID: 0}
+  characterManager: {fileID: 15666217}
   movementSpeed: 6
   waitTime: 0.5
-  moveAmount: 0
+  moveAmount: 2
 --- !u!64 &1754082254
 MeshCollider:
   m_ObjectHideFlags: 0
