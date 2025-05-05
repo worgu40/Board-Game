@@ -6,7 +6,7 @@ public class CharacterManager : MonoBehaviour
     public GameObject character;
     public GameObject enemyPrefab; // Reference to the enemy prefab
     public PlaneMouseHit planeMouseHit; // Reference to PlaneMouseHit
-    private List<GameObject> characterClones = new List<GameObject>();
+    private List<GameObject> characterClones = new();
     private int activeCharacterIndex = 0;
 
     void Start()
@@ -58,6 +58,16 @@ public class CharacterManager : MonoBehaviour
             CharacterComponent activeCharacter = GetActiveCharacterComponent();
             activeCharacter.ModifyHealth(1); // Increase health by 1
             Debug.Log($"{activeCharacter.CharacterName}'s health increased to {activeCharacter.Health}");
+        }
+
+        // Forward weapon assignment and cycling to the active character
+        for (int i = 0; i < characterClones.Count; i++)
+        {
+            CharacterComponent characterComponent = characterClones[i].GetComponent<CharacterComponent>();
+            if (characterComponent != null)
+            {
+                characterComponent.UpdateWeapon(i == activeCharacterIndex); // Pass true only for the active character
+            }
         }
     }
 

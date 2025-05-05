@@ -1,8 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterComponent : MonoBehaviour
 {
     private Character character;
+    private List<Weapon> weapons = new(); // Each character has their own weapon inventory
+    private int currentWeaponIndex = 0;
 
     public void AssignCharacter(Character newCharacter)
     {
@@ -28,9 +31,40 @@ public class CharacterComponent : MonoBehaviour
         }
     }
 
-    void Update()
+    public void UpdateWeapon(bool isActiveCharacter)
     {
-        // Removed health update logic to prevent affecting all clones simultaneously
+        if (!isActiveCharacter) return; // Only process input for the active character
+
+        // Assign weapons based on key presses
+        if (Input.GetKeyDown(KeyCode.Alpha1)) AssignWeapon(new Boomerang());
+        if (Input.GetKeyDown(KeyCode.Alpha2)) AssignWeapon(new Katana());
+        if (Input.GetKeyDown(KeyCode.Alpha3)) AssignWeapon(new SpaceBane());
+        if (Input.GetKeyDown(KeyCode.Alpha4)) AssignWeapon(new OlReliable());
+
+        // Cycle through weapons with the F key
+        if (Input.GetKeyDown(KeyCode.F) && weapons.Count > 0)
+        {
+            currentWeaponIndex = (currentWeaponIndex + 1) % weapons.Count;
+            Debug.Log($"Current weapon: {weapons[currentWeaponIndex].weaponName}");
+        }
+    }
+
+    public void AssignWeapon(Weapon newWeapon)
+    {
+        if (weapons.Count >= 3)
+        {
+            Debug.Log("Cannot equip more than 3 weapons.");
+            return;
+        }
+
+        weapons.Add(newWeapon);
+        Debug.Log($"Equipped weapon: {newWeapon.weaponName}");
+    }
+
+    public Weapon GetCurrentWeapon()
+    {
+        if (weapons.Count == 0) return null;
+        return weapons[currentWeaponIndex];
     }
 
     public void UpdateStatsFromCharacter()
