@@ -8,29 +8,11 @@ public class CharacterManager : MonoBehaviour
     public PlaneMouseHit planeMouseHit; // Reference to PlaneMouseHit
     private List<GameObject> characterClones = new();
     private int activeCharacterIndex = 0;
+    private bool charactersSpawned = false; // Flag to track if characters are already spawned
 
     void Start()
     {
-        Character avgHero = new AverageHero();
-        Character normalMan = new VeryNormalMan();
-        Character Zombie = new Zombie();
-
-        // Clone and position the characters
-        GameObject avgHeroClone = Instantiate(character);
-        avgHeroClone.transform.position = new Vector3(5, 0, 5);
-        avgHeroClone.GetComponent<CharacterComponent>().AssignCharacter(avgHero);
-        characterClones.Add(avgHeroClone);
-
-        GameObject normalManClone = Instantiate(character);
-        normalManClone.transform.position = new Vector3(-5, 0, -5);
-        normalManClone.GetComponent<CharacterComponent>().AssignCharacter(normalMan);
-        characterClones.Add(normalManClone);
-
-        // Spawn the enemy and assign it the Zombie character
-        GameObject enemyClone = Instantiate(enemyPrefab);
-        enemyClone.transform.position = new Vector3(5, 0, -5);
-        enemyClone.GetComponent<CharacterComponent>().AssignCharacter(Zombie);
-        characterClones.Add(enemyClone);
+        SpawnCharacters();
 
         Debug.Log($"Active character: {GetActiveCharacterName()}");
     }
@@ -90,5 +72,33 @@ public class CharacterManager : MonoBehaviour
     private string GetActiveCharacterName()
     {
         return GetActiveCharacterComponent().CharacterName;
+    }
+
+    private void SpawnCharacters()
+    {
+        if (charactersSpawned) return; // Stop if characters are already spawned
+
+        charactersSpawned = true; // Set the flag to true after spawning characters
+
+        Character avgHero = new AverageHero();
+        Character normalMan = new VeryNormalMan();
+        Character Zombie = new Zombie();
+
+        // Clone and position the characters
+        GameObject avgHeroClone = Instantiate(character);
+        avgHeroClone.transform.position = new Vector3(5, 0, 5);
+        avgHeroClone.GetComponent<CharacterComponent>().AssignCharacter(avgHero);
+        characterClones.Add(avgHeroClone);
+
+        GameObject normalManClone = Instantiate(character);
+        normalManClone.transform.position = new Vector3(-5, 0, -5);
+        normalManClone.GetComponent<CharacterComponent>().AssignCharacter(normalMan);
+        characterClones.Add(normalManClone);
+
+        // Spawn the enemy and assign it the Zombie character
+        GameObject enemyClone = Instantiate(enemyPrefab);
+        enemyClone.transform.position = new Vector3(5, 0, -5);
+        enemyClone.GetComponent<CharacterComponent>().AssignCharacter(Zombie);
+        characterClones.Add(enemyClone);
     }
 }

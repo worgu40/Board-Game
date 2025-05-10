@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class CharacterComponent : MonoBehaviour
 {
-    private Character character;
+    // Reference to the Character class
+    private Character character; // STORES ATTRIBUTES, INITIALIZED FOR EVERY CHARACTER IN THIS COMPONENT.
     private List<Weapon> weapons = new(); // Each character has their own weapon inventory
     private int currentWeaponIndex = 0;
 
@@ -11,6 +12,10 @@ public class CharacterComponent : MonoBehaviour
     {
         character = newCharacter;
         Debug.Log($"Assigned character: {character.characterName}");
+
+        // Set the name of the GameObject to the character's name
+        transform.parent.name = character.characterName;
+        
     }
 
     public string CharacterName;
@@ -29,6 +34,10 @@ public class CharacterComponent : MonoBehaviour
             Weight = character.weight;
             MovementRange = character.movementRange;
         }
+    }
+    void Awake()
+    {
+        
     }
 
     public void UpdateWeapon(bool isActiveCharacter)

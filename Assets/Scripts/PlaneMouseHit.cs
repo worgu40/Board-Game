@@ -116,4 +116,30 @@ public class PlaneMouseHit : MonoBehaviour
 
         return new Vector3(centerX, 0, centerZ); // Return the center position
     }
+    
+    void OnDrawGizmos()
+    {
+        if (characterManager != null)
+        {
+            var activeCharacter = characterManager.GetActiveCharacterComponent();
+            if (activeCharacter == null)
+            {
+                Debug.LogWarning("No active character found or characterClones list is empty.");
+                return;
+            }
+
+            // Get the movement range of the active character
+            int movementRange = activeCharacter.MovementRange;
+
+            // Calculate the size of the box
+            float boxSize = 2 + (movementRange * 4);
+
+            // Get the active character's position
+            Vector3 characterPosition = activeCharacter.transform.position;
+
+            // Draw the box
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(characterPosition, new Vector3(boxSize, 0.1f, boxSize));
+        }
+    }
 }
