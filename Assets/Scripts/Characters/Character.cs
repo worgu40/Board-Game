@@ -19,11 +19,6 @@ public class Character
         movementRange = moveDist;
         damage = dmg;
     }
-
-    public virtual void DisplayStats()
-    {
-        Debug.Log($" Name: {characterName} \n Health: {health} \n Throw Range: {throwRange} \n Weight: {weight} \n Movement Range: {movementRange}");
-    }
 }
 public class AverageHero : Character
 {

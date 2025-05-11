@@ -1,24 +1,26 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 public class CharacterManager : MonoBehaviour
 {
     public GameObject character;
     public GameObject enemyPrefab; // Reference to the enemy prefab
     public PlaneMouseHit planeMouseHit; // Reference to PlaneMouseHit
-    private List<GameObject> characterClones = new();
+    public List<GameObject> characterClones = new();
     private int activeCharacterIndex = 0;
-    private bool charactersSpawned = false; // Flag to track if characters are already spawned
+    private bool characterSpawned;
 
     void Start()
     {
-        SpawnCharacters();
-
-        Debug.Log($"Active character: {GetActiveCharacterName()}");
     }
 
     void Update()
     {
+        if (!characterSpawned) {
+            SpawnCharacters();
+        }
+        
         // Cycle through characters with the '.' key
         if (Input.GetKeyDown(KeyCode.Period))
         {
@@ -57,14 +59,11 @@ public class CharacterManager : MonoBehaviour
     {
         if (characterClones.Count == 0)
         {
-            Debug.LogError("No characters in characterClones list.");
-            return null;
         }
 
         CharacterComponent component = characterClones[activeCharacterIndex].GetComponent<CharacterComponent>();
         if (component == null)
         {
-            Debug.LogError($"Character at index {activeCharacterIndex} is missing a CharacterComponent.");
         }
         return component;
     }
@@ -76,29 +75,21 @@ public class CharacterManager : MonoBehaviour
 
     private void SpawnCharacters()
     {
-        if (charactersSpawned) return; // Stop if characters are already spawned
-
-        charactersSpawned = true; // Set the flag to true after spawning characters
-
         Character avgHero = new AverageHero();
         Character normalMan = new VeryNormalMan();
         Character Zombie = new Zombie();
 
         // Clone and position the characters
-        GameObject avgHeroClone = Instantiate(character);
-        avgHeroClone.transform.position = new Vector3(5, 0, 5);
-        avgHeroClone.GetComponent<CharacterComponent>().AssignCharacter(avgHero);
-        characterClones.Add(avgHeroClone);
+        CloneCharacter(character, avgHero, new Vector3(5, 0, 5));
+        CloneCharacter(character, normalMan, new Vector3(-5, 0, -5));
+        CloneCharacter(enemyPrefab, Zombie, new Vector3(5, 0, -5));
+        characterSpawned = true;
+    }
+    private void CloneCharacter(GameObject characterObject, Character characterComponent, Vector3 charPosition) {
+        GameObject clonedEnemy = Instantiate(characterObject);
+        clonedEnemy.transform.position = charPosition;
+        clonedEnemy.GetComponent<CharacterComponent>().AssignCharacter(characterComponent);
+        characterClones.Add(clonedEnemy);
 
-        GameObject normalManClone = Instantiate(character);
-        normalManClone.transform.position = new Vector3(-5, 0, -5);
-        normalManClone.GetComponent<CharacterComponent>().AssignCharacter(normalMan);
-        characterClones.Add(normalManClone);
-
-        // Spawn the enemy and assign it the Zombie character
-        GameObject enemyClone = Instantiate(enemyPrefab);
-        enemyClone.transform.position = new Vector3(5, 0, -5);
-        enemyClone.GetComponent<CharacterComponent>().AssignCharacter(Zombie);
-        characterClones.Add(enemyClone);
     }
 }

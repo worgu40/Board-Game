@@ -15,10 +15,6 @@ public class Weapon
         damage = dmg;
         minRoll = roll;
     }
-
-    public virtual void DisplayStats() {
-        Debug.Log($" Name: {weaponName} \n Weight: {weight} \n Range: {range} \n Damage: {damage} \n Min Roll: {minRoll}");
-    }
 }
 
 public class Boomerang : Weapon {

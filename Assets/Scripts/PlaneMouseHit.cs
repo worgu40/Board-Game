@@ -1,26 +1,27 @@
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class PlaneMouseHit : MonoBehaviour
 {
-    Vector3 clickPosition;
+    Vector3 clickPosition; // Position on the clicked part of the plane with the Raycast from the main camera onto plane.
     public CharacterManager characterManager; // Reference to CharacterManager
     public float movementSpeed = 2f; // Speed of the player's movement
     public float waitTime = 1f; // Wait time between movements
     private bool isMoving = false; // Flag to track if the player is currently moving
-    public int moveAmount;
+    public int moveAmount; // Amount of tiles that the player can move within one turn
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && !isMoving)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            Ray hitRay = Camera.main.ScreenPointToRay(Input.mousePosition); // Raycast from camera to plane.
+            RaycastHit hitInfo; // Method by Unity to get raycast info.
+            if (Physics.Raycast(hitRay, out hitInfo))
             {
-                if (hit.collider.gameObject == gameObject)
+                if (hitInfo.collider.gameObject == gameObject)
                 {
-                    clickPosition = hit.point;
+                    clickPosition = hitInfo.point;
                     Debug.Log("Clicked on the plane at: " + clickPosition);
                     string boardPosition = GetBoardPosition(clickPosition);
                     Debug.Log("Board Position: " + boardPosition);
@@ -119,27 +120,23 @@ public class PlaneMouseHit : MonoBehaviour
     
     void OnDrawGizmos()
     {
-        if (characterManager != null)
-        {
-            var activeCharacter = characterManager.GetActiveCharacterComponent();
-            if (activeCharacter == null)
-            {
-                Debug.LogWarning("No active character found or characterClones list is empty.");
-                return;
-            }
-
-            // Get the movement range of the active character
-            int movementRange = activeCharacter.MovementRange;
-
-            // Calculate the size of the box
-            float boxSize = 2 + (movementRange * 4);
-
-            // Get the active character's position
-            Vector3 characterPosition = activeCharacter.transform.position;
-
-            // Draw the box
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(characterPosition, new Vector3(boxSize, 0.1f, boxSize));
+        if (characterManager == null || characterManager.characterClones.Count == 0) {
+            return; // Exit if characterManager is null or characterClones is empty
         }
+
+        var activeCharacter = characterManager.GetActiveCharacterComponent();
+
+        // Get the movement range of the active character
+        int movementRange = activeCharacter.MovementRange;
+
+        // Calculate the size of the box
+        float boxSize = 2 + (movementRange * 4);
+
+        // Get the active character's position
+        Vector3 characterPosition = activeCharacter.transform.position;
+
+        // Draw the box
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(characterPosition, new Vector3(boxSize, 0.1f, boxSize));
     }
 }

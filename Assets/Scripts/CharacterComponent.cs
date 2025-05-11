@@ -7,17 +7,6 @@ public class CharacterComponent : MonoBehaviour
     private Character character; // STORES ATTRIBUTES, INITIALIZED FOR EVERY CHARACTER IN THIS COMPONENT.
     private List<Weapon> weapons = new(); // Each character has their own weapon inventory
     private int currentWeaponIndex = 0;
-
-    public void AssignCharacter(Character newCharacter)
-    {
-        character = newCharacter;
-        Debug.Log($"Assigned character: {character.characterName}");
-
-        // Set the name of the GameObject to the character's name
-        transform.parent.name = character.characterName;
-        
-    }
-
     public string CharacterName;
     public int Health;
     public int ThrowRange;
@@ -34,10 +23,6 @@ public class CharacterComponent : MonoBehaviour
             Weight = character.weight;
             MovementRange = character.movementRange;
         }
-    }
-    void Awake()
-    {
-        
     }
 
     public void UpdateWeapon(bool isActiveCharacter)
@@ -94,6 +79,16 @@ public class CharacterComponent : MonoBehaviour
         {
             character.health = Mathf.Max(0, character.health + amount); // Prevent health from going below 0
             Health = character.health; // Update the local Health property
+        }
+    }
+    public void AssignCharacter(Character newCharacter)
+    {
+        character = newCharacter;
+        Debug.Log($"Assigned character: {character.characterName}");
+
+        if (transform.parent != null)
+        {
+            transform.parent.name = character.characterName; // Set the name of the parent GameObject
         }
     }
 }
