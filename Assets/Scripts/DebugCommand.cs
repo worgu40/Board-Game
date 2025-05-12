@@ -7,9 +7,9 @@ public class DebugCommandBase
     private string _commandDescription;
     private string _commandFormat;
 
-    public string commandId { get { return commandId; } }
-    public string commandDescription { get { return commandDescription; } }
-    public string commandFormat { get { return commandFormat; } }
+    public string commandId { get { return _commandId; } }
+    public string commandDescription { get { return _commandDescription; } }
+    public string commandFormat { get { return _commandFormat; } }
 
     public DebugCommandBase(string id, string description, string format) {
         _commandId = id;

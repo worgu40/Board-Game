@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Unity.VisualScripting;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -47,6 +48,9 @@ public class CharacterManager : MonoBehaviour
         // Forward weapon assignment and cycling to the active character
         for (int i = 0; i < characterClones.Count; i++)
         {
+            if (characterClones[i] == null) {
+                return;
+            }
             CharacterComponent characterComponent = characterClones[i].GetComponent<CharacterComponent>();
             if (characterComponent != null)
             {
@@ -60,7 +64,6 @@ public class CharacterManager : MonoBehaviour
         if (characterClones.Count == 0)
         {
         }
-
         CharacterComponent component = characterClones[activeCharacterIndex].GetComponent<CharacterComponent>();
         if (component == null)
         {
@@ -80,16 +83,29 @@ public class CharacterManager : MonoBehaviour
         Character Zombie = new Zombie();
 
         // Clone and position the characters
-        CloneCharacter(character, avgHero, new Vector3(5, 0, 5));
-        CloneCharacter(character, normalMan, new Vector3(-5, 0, -5));
-        CloneCharacter(enemyPrefab, Zombie, new Vector3(5, 0, -5));
+        CloneCharacter(character, avgHero, new Vector3(5, 0, 5), false);
+        CloneCharacter(character, normalMan, new Vector3(-5, 0, -5), false);
+        CloneCharacter(enemyPrefab, Zombie, new Vector3(5, 0, -5), true);
         characterSpawned = true;
     }
-    private void CloneCharacter(GameObject characterObject, Character characterComponent, Vector3 charPosition) {
-        GameObject clonedEnemy = Instantiate(characterObject);
-        clonedEnemy.transform.position = charPosition;
-        clonedEnemy.GetComponent<CharacterComponent>().AssignCharacter(characterComponent);
-        characterClones.Add(clonedEnemy);
+    private void CloneCharacter(GameObject characterObject, Character characterComponent, Vector3 charPosition, bool isEnemy) {
+        GameObject clonedCharacter = Instantiate(characterObject);
+        clonedCharacter.transform.position = charPosition;
+        clonedCharacter.GetComponent<CharacterComponent>().AssignCharacter(characterComponent);
+        characterClones.Add(clonedCharacter);
+        if (!isEnemy) {
+            return;
+        }
+        clonedCharacter.tag = "Enemy";
 
+    }
+    public void KillAllCharacters() {
+        foreach (GameObject character in characterClones) {
+            if (character.CompareTag("Enemy")) {
+                return;
+            }
+            Debug.Log("Killed: " + character);
+            Destroy(character);
+        }
     }
 }
