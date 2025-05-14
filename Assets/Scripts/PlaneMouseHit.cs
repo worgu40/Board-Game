@@ -30,6 +30,9 @@ public class PlaneMouseHit : MonoBehaviour
 
                     // Start moving the active character
                     Vector3 currentBoardCenter = characterManager.GetActiveCharacterComponent().transform.position;
+                    if (currentBoardCenter == null) {
+                        return;
+                    }
                     StartCoroutine(MovePlayer(currentBoardCenter, boardCenter));
                 }
             }
@@ -125,6 +128,9 @@ public class PlaneMouseHit : MonoBehaviour
         }
 
         var activeCharacter = characterManager.GetActiveCharacterComponent();
+        if (activeCharacter == null) {
+            return;
+        }
 
         // Get the movement range of the active character
         int movementRange = activeCharacter.MovementRange;

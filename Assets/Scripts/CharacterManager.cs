@@ -10,7 +10,6 @@ public class CharacterManager : MonoBehaviour
     public PlaneMouseHit planeMouseHit; // Reference to PlaneMouseHit
     public List<GameObject> characterClones = new();
     private int activeCharacterIndex = 0;
-    private bool characterSpawned;
 
     void Start()
     {
@@ -18,9 +17,6 @@ public class CharacterManager : MonoBehaviour
 
     void Update()
     {
-        if (!characterSpawned) {
-            SpawnCharacters();
-        }
         
         // Cycle through characters with the '.' key
         if (Input.GetKeyDown(KeyCode.Period))
@@ -63,11 +59,9 @@ public class CharacterManager : MonoBehaviour
     {
         if (characterClones.Count == 0)
         {
+            return null;
         }
         CharacterComponent component = characterClones[activeCharacterIndex].GetComponent<CharacterComponent>();
-        if (component == null)
-        {
-        }
         return component;
     }
 
@@ -76,7 +70,7 @@ public class CharacterManager : MonoBehaviour
         return GetActiveCharacterComponent().CharacterName;
     }
 
-    private void SpawnCharacters()
+    public void SpawnCharacters()
     {
         Character avgHero = new AverageHero();
         Character normalMan = new VeryNormalMan();
@@ -86,7 +80,6 @@ public class CharacterManager : MonoBehaviour
         CloneCharacter(character, avgHero, new Vector3(5, 0, 5), false);
         CloneCharacter(character, normalMan, new Vector3(-5, 0, -5), false);
         CloneCharacter(enemyPrefab, Zombie, new Vector3(5, 0, -5), true);
-        characterSpawned = true;
     }
     private void CloneCharacter(GameObject characterObject, Character characterComponent, Vector3 charPosition, bool isEnemy) {
         GameObject clonedCharacter = Instantiate(characterObject);
@@ -107,5 +100,7 @@ public class CharacterManager : MonoBehaviour
             Debug.Log("Killed: " + character);
             Destroy(character);
         }
+        Debug.Log(characterClones[0]);
+        
     }
 }

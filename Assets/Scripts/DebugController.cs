@@ -11,6 +11,7 @@ public class DebugController : MonoBehaviour
     private bool showConsole;
     private string input;
     public static DebugCommand KILL_ALL;
+    public static DebugCommand SPAWN_ALL;
     public List<object> commandList;
 
     public void OnToggleDebug(InputValue value) {
@@ -40,9 +41,13 @@ public class DebugController : MonoBehaviour
         KILL_ALL = new DebugCommand("kill_all", "Removes all characters from plane.", "kill_all", () => {
             charManager.KillAllCharacters();
         });
+        SPAWN_ALL = new DebugCommand("spawn_all", "Spawns all characters in predetermined debug list", "kill_all", () => {
+            charManager.SpawnCharacters();
+        });
 
         commandList = new List<object> {
             KILL_ALL,
+            SPAWN_ALL,
         };
     }
 
@@ -63,14 +68,11 @@ public class DebugController : MonoBehaviour
         for (int i = 0; i < commandList.Count; i++) {
             DebugCommandBase commandBase = commandList[i] as DebugCommandBase;
             // EX: kill_all
-            if (!input.Contains(commandBase.commandId)) {
-                return;
+            if (input.Contains(commandBase.commandId)) {
+                if (commandList[i] as DebugCommand != null) {
+                    (commandList[i] as DebugCommand).Invoke();
+                }
             }
-            if (commandList[i] as DebugCommand == null) {
-                Debug.Log("Command does not exist");
-                return;
-            }
-            (commandList[i] as DebugCommand).Invoke();
         }
     }
 }
