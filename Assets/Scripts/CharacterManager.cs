@@ -1,94 +1,166 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Runtime.CompilerServices;
+using UnityEditor.Animations;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CharacterManager : MonoBehaviour
 {
-    public GameObject character;
-    public GameObject enemyPrefab; // Reference to the enemy prefab
-    public PlaneMouseHit planeMouseHit; // Reference to PlaneMouseHit
-    private List<GameObject> characterClones = new();
-    private int activeCharacterIndex = 0;
-
+    public GameObject characterPrefab;
+    public Dictionary<string, Character> characterDict = new();
+    public GameObject AVeryNormalMan;
+    public GameObject AverageHero;
+    public Dictionary<string, GameObject> modelDict = new();
+    public Dictionary<string, GameObject> spawnedCharacters = new();
+    public GameObject characterOptionsPanelPrefab; // Assign in Inspector
+    private GameObject currentPanel;
+    
     void Start()
     {
         Character avgHero = new AverageHero();
-        Character normalMan = new VeryNormalMan();
-        Character Zombie = new Zombie();
+        Character vNormMan = new VeryNormalMan();
+        Character zombie = new Zombie();
+        characterDict.Add("avgHero", avgHero);
+        characterDict.Add("vNormMan", vNormMan);
+        characterDict.Add("zombie", zombie);
 
-        // Clone and position the characters
-        GameObject avgHeroClone = Instantiate(character);
-        avgHeroClone.transform.position = new Vector3(5, 0, 5);
-        avgHeroClone.GetComponent<CharacterComponent>().AssignCharacter(avgHero);
-        characterClones.Add(avgHeroClone);
-
-        GameObject normalManClone = Instantiate(character);
-        normalManClone.transform.position = new Vector3(-5, 0, -5);
-        normalManClone.GetComponent<CharacterComponent>().AssignCharacter(normalMan);
-        characterClones.Add(normalManClone);
-
-        // Spawn the enemy and assign it the Zombie character
-        GameObject enemyClone = Instantiate(enemyPrefab);
-        enemyClone.transform.position = new Vector3(5, 0, -5);
-        enemyClone.GetComponent<CharacterComponent>().AssignCharacter(Zombie);
-        characterClones.Add(enemyClone);
-
-        Debug.Log($"Active character: {GetActiveCharacterName()}");
+        modelDict.Add("avgHero", AverageHero);
+        modelDict.Add("vNormMan", AVeryNormalMan);
     }
 
     void Update()
     {
-        // Cycle through characters with the '.' key
-        if (Input.GetKeyDown(KeyCode.Period))
-        {
-            activeCharacterIndex = (activeCharacterIndex + 1) % characterClones.Count;
-            Debug.Log($"Active character: {GetActiveCharacterName()}");
-        }
+        CastRayForGrid();
+        ClickedCharacterOptions();
+    }
 
-        // Decrease health of the active character with '-' key
-        if (Input.GetKeyDown(KeyCode.Minus))
-        {
-            CharacterComponent activeCharacter = GetActiveCharacterComponent();
-            activeCharacter.ModifyHealth(-1); // Decrease health by 1
-            Debug.Log($"{activeCharacter.CharacterName}'s health decreased to {activeCharacter.Health}");
-        }
 
-        // Increase health of the active character with '+' key
-        if (Input.GetKeyDown(KeyCode.Equals)) // KeyCode.Equals corresponds to the '+' key
-        {
-            CharacterComponent activeCharacter = GetActiveCharacterComponent();
-            activeCharacter.ModifyHealth(1); // Increase health by 1
-            Debug.Log($"{activeCharacter.CharacterName}'s health increased to {activeCharacter.Health}");
-        }
 
-        // Forward weapon assignment and cycling to the active character
-        for (int i = 0; i < characterClones.Count; i++)
+
+
+    private void ShowUIPanelAtClick(Vector3 screenPosition)
+    {
+        // Destroy previous panel if it exists
+        if (currentPanel != null) {
+            Destroy(currentPanel);
+        }
+        
         {
-            CharacterComponent characterComponent = characterClones[i].GetComponent<CharacterComponent>();
-            if (characterComponent != null)
+            // Instantiate the panel as a child of the Canvas
+            Canvas canvas = FindFirstObjectByType<Canvas>();
+            currentPanel = Instantiate(characterOptionsPanelPrefab, canvas.transform);
+
+            // Convert screen position to Canvas (UI) position
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvas.transform as RectTransform,
+                screenPosition,
+                canvas.worldCamera,
+                out Vector2 localPoint
+            );
+
+            // Set the panel's anchored position
+            RectTransform panelRect = currentPanel.GetComponent<RectTransform>();
+            panelRect.anchoredPosition = localPoint;
+        }
+    }
+    private void ClickedCharacterOptions()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject hitObject = CheckForHit("Character");
+            if (hitObject == null)
             {
-                characterComponent.UpdateWeapon(i == activeCharacterIndex); // Pass true only for the active character
+                return;
+            }
+            ShowUIPanelAtClick(Input.mousePosition);
+
+        }
+    }
+    private void PlaceCharacter()
+    {
+        
+    }
+    private void MoveCharacter(Vector3 endPos)
+    {
+    }
+    private void CastRayForGrid()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject hitObject = CheckForHit("Grid");
+            if (hitObject == null)
+            {
+                return;
+            }
+
+            {
+                Debug.Log(hitObject.name); // Log name of the clicked object, can use name to find position.
+                Debug.Log(GetGridPosition(hitObject)); // Returns the Vector3 of the clicked object.
             }
         }
     }
+    private GameObject CheckForHit(string comparedTag) { // Stored game object passes the specified game object to gather info about the HIT game object
+        Ray hitRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
 
-    public CharacterComponent GetActiveCharacterComponent()
-    {
-        if (characterClones.Count == 0)
+        if (!Physics.Raycast(hitRay, out hitInfo)) // Checking if something is hit.
         {
-            Debug.LogError("No characters in characterClones list.");
             return null;
         }
 
-        CharacterComponent component = characterClones[activeCharacterIndex].GetComponent<CharacterComponent>();
-        if (component == null)
+        GameObject hitObject = hitInfo.collider.gameObject; // Object that was hit by the ray.
+        if (hitObject.CompareTag(comparedTag))
         {
-            Debug.LogError($"Character at index {activeCharacterIndex} is missing a CharacterComponent.");
+            return hitObject;
         }
-        return component;
-    }
 
-    private string GetActiveCharacterName()
+        return null;
+    }
+    public void SpawnCharacter(string character)
     {
-        return GetActiveCharacterComponent().CharacterName;
+        Character spawnChar = characterDict[character]; // Character CLASS (attributes)
+        if (spawnChar == null)
+        {
+            return;
+        }
+        else
+        {
+            Debug.Log(spawnChar);
+            GameObject spawnedCharacter = Instantiate(characterPrefab);
+            Debug.Log("this" + spawnedCharacter);
+            spawnedCharacter.GetComponent<CharacterComponent>().AssignCharacter(character);
+
+            GameObject playerModel = Instantiate(modelDict[character]);
+            playerModel.AddComponent<CharacterComponent>();
+
+            playerModel.transform.position = spawnedCharacter.transform.position;
+            CharacterComponent playerModelComponent = playerModel.GetComponent<CharacterComponent>();
+            CharacterComponent spawnedCharacterComponent = spawnedCharacter.GetComponent<CharacterComponent>();
+
+            playerModelComponent.characterName = spawnedCharacterComponent.characterName;
+            playerModelComponent.health = spawnedCharacterComponent.health;
+            playerModelComponent.throwRange = spawnedCharacterComponent.throwRange;
+            playerModelComponent.weight = spawnedCharacterComponent.weight;
+            playerModelComponent.movementRange = spawnedCharacterComponent.movementRange;
+            playerModelComponent.damage = spawnedCharacterComponent.damage;
+
+            Vector3 modelPos = playerModel.transform.position;
+            modelPos.y = spawnedCharacter.transform.position.y - 1f;
+            playerModel.transform.position = modelPos;
+
+            playerModel.tag = "Character";
+            spawnedCharacters.Add(character, playerModel);
+            Destroy(spawnedCharacter);
+        }
+    }
+    public void KillCharacter(string character)
+    {
+        Destroy(spawnedCharacters[character]);
+    }
+    private Vector3 GetGridPosition(GameObject gridObject)
+    {
+        return gridObject.transform.position;
     }
 }

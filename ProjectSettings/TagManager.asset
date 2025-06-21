@@ -4,10 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Items
-  - Trigger
-  - Wall
-  - Dice
+  - Grid
+  - charManager
+  - avgHero
+  - vNormMan
+  - Character
   layers:
   - Default
   - TransparentFX
@@ -15,9 +16,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Wall
-  - Dice
-  - DicePlane
+  - 
+  - 
+  - 
   - 
   - 
   - 
