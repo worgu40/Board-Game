@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "The Quest For Everything.sln"
+    "dotnet.defaultSolution": "Board-Game.sln"
 }

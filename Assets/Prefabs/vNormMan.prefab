@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 9031654651530251745}
   - component: {fileID: 2709243506648956}
   m_Layer: 0
-  m_Name: HERO_Model_3_AVeryNormalMan
+  m_Name: vNormMan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

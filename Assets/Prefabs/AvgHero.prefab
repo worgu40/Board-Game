@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 2822195386230242052}
   - component: {fileID: 5223216543846870602}
   m_Layer: 0
-  m_Name: HERO_Model_1_AverageHero
+  m_Name: AvgHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
