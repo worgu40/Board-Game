@@ -10,7 +10,7 @@ public class CharacterComponent : MonoBehaviour
     public float damage;
     public CharacterManager charManager;
     [HideInInspector]
-    public bool placed;
+    public bool placed = false;
 
     void Start()
     {

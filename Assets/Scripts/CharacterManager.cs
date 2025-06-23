@@ -9,13 +9,22 @@ using UnityEngine.Rendering;
 public class CharacterManager : MonoBehaviour
 {
     public GameObject characterPrefab;
+
     public Dictionary<string, Character> characterDict = new();
     public GameObject AVeryNormalMan;
     public GameObject AverageHero;
+
     public Dictionary<string, GameObject> modelDict = new();
+
     public Dictionary<string, GameObject> spawnedCharacters = new();
-    public GameObject characterOptionsPanelPrefab; // Assign in Inspector
+
+    public GameObject characterOptionsPanelPrefab; // Used for whole UI design when character clicked.
     private GameObject currentPanel;
+
+    private bool awaitingPlacement = false;
+
+    private GameObject currentSelectedCharacter;
+    CharacterComponent currentSelectedCharacterComp;
     
     void Start()
     {
@@ -34,6 +43,10 @@ public class CharacterManager : MonoBehaviour
     {
         CastRayForGrid();
         ClickedCharacterOptions();
+        if (awaitingPlacement)
+        {
+            PlaceCharacter();
+        }
     }
 
 
@@ -52,8 +65,15 @@ public class CharacterManager : MonoBehaviour
             Canvas canvas = FindFirstObjectByType<Canvas>();
             currentPanel = Instantiate(characterOptionsPanelPrefab, canvas.transform);
 
+            UnityEngine.UI.Button placeButton = currentPanel.GetComponentInChildren<UnityEngine.UI.Button>();
+            if (placeButton != null)
+            {
+                placeButton.onClick.RemoveAllListeners();
+                placeButton.onClick.AddListener(PlaceButtonClick);
+            }
+
             // Convert screen position to Canvas (UI) position
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvas.transform as RectTransform,
                 screenPosition,
                 canvas.worldCamera,
@@ -74,13 +94,42 @@ public class CharacterManager : MonoBehaviour
             {
                 return;
             }
-            ShowUIPanelAtClick(Input.mousePosition);
 
+            currentSelectedCharacter = hitObject;
+            currentSelectedCharacterComp = hitObject.GetComponent<CharacterComponent>();
+            Debug.Log(currentSelectedCharacterComp);
+            Debug.Log(currentSelectedCharacterComp.placed);
+
+            if (!currentSelectedCharacterComp.placed)
+            {
+                ShowUIPanelAtClick(Input.mousePosition);
+            }
         }
+    }
+    public void PlaceButtonClick()
+    {
+        awaitingPlacement = true;
+        Debug.Log("Waiting to be placed...");
     }
     private void PlaceCharacter()
     {
+        Debug.Log("Placement method called");
+
+        GameObject hitGrid = null;
+        if (Input.GetMouseButtonDown(0))
+        {
+            hitGrid = CheckForHit("Grid");
+        }
         
+        if (hitGrid != null)
+        {
+            awaitingPlacement = false;
+            currentSelectedCharacterComp.placed = true;
+            currentSelectedCharacterComp = null;
+
+            currentSelectedCharacter.transform.position = hitGrid.transform.position;
+            Debug.Log("Placement would be placed at " + hitGrid.transform.position);
+        }
     }
     private void MoveCharacter(Vector3 endPos)
     {
