@@ -4966,21 +4966,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 5923060586247719796}
     m_Modifications:
     - target: {fileID: 3186002818669991277, guid: 16601d6a1762aaf4d996defcb4a9c6e5, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3186002818669991277, guid: 16601d6a1762aaf4d996defcb4a9c6e5, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3186002818669991277, guid: 16601d6a1762aaf4d996defcb4a9c6e5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 183936892}
-    - target: {fileID: 3186002818669991277, guid: 16601d6a1762aaf4d996defcb4a9c6e5, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 183936894}
     - target: {fileID: 7092081082789638747, guid: 16601d6a1762aaf4d996defcb4a9c6e5, type: 3}
       propertyPath: m_Name
       value: FIRST PLACEMENT UI
